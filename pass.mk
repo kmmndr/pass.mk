@@ -36,6 +36,9 @@ Options:
 
   pass-reinit
     Update password permission (run after pass-add-user)
+
+  pass-clone -e remote=...
+    Clone store from remote repository
 endef
 
 .PHONY: help
@@ -128,6 +131,11 @@ pass-init: review-user-variables
 .PHONY: pass-reinit
 pass-reinit:
 	pass init $$(cat ${PASSWORD_STORE_DIR}/.gpg-id)
+
+.PHONY: pass-clone
+pass-clone:
+	@test -n "${remote}" || (echo 'remote parameter is missing'; exit 1)
+	git clone ${remote} ${PASSWORD_STORE_DIR}
 
 .PHONY: pass-list
 pass-list:
