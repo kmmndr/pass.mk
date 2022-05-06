@@ -39,6 +39,11 @@ Options:
 
   pass-clone -e remote=...
     Clone store from remote repository
+
+Environment:
+  GITLAB_HOST=${GITLAB_HOST}
+  GNUPGHOME=${GNUPGHOME}
+  PASSWORD_STORE_DIR=${PASSWORD_STORE_DIR}
 endef
 
 .PHONY: help

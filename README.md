@@ -86,4 +86,9 @@ Options:
 
   pass-clone -e remote=...
     Clone store from remote repository
+
+Environment:
+  GITLAB_HOST=https://gitlab.com
+  GNUPGHOME=/home/john/.gnupg
+  PASSWORD_STORE_DIR=/home/john/.password-store
 ```
