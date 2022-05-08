@@ -1,13 +1,15 @@
 # pass.mk
 
 Simple helper for [pass](https://www.passwordstore.org/) meant to ease usage in
-team without prior gpg knowledge.
+team without prior GPG knowledge.
 
 ## Requirements
 
 The following tools are required:
-- coreutils
-- make
+- [coreutils](https://www.gnu.org/software/coreutils/)
+- [make](https://www.gnu.org/software/make/)
+- [gnupg](https://www.gnupg.org/)
+- [pass](https://www.passwordstore.org/)
 
 ## Installation
 

@@ -49,14 +49,6 @@ endef
 .PHONY: help
 help:; @ $(info $(usage)) :
 
-.PHONY: gpg-install-osx
-gpg-install-osx:
-	brew install gpg
-
-.PHONY: gpg-fix-permissions
-gpg-fix-permissions:
-	chmod 0700 $$GNUPGHOME
-
 .PHONY: gpg-list-keys
 gpg-list-keys:
 	gpg --list-keys
