@@ -117,7 +117,7 @@ gpg-import-from-gitlab:
 .PHONY: gpg-ultimate-trust
 gpg-ultimate-trust:
 	$(eval email?=$(shell read -p "E-mail: " email; echo $$email))
-	gpg --list-keys --fingerprint --with-colons ${email} | awk -F':' '/^fpr/ { print $$10 ":6:" }' | gpg --import-ownertrust
+	@gpg --list-keys --fingerprint --with-colons ${email} | awk -F':' '/^fpr/ { print $$10 ":6:" }' | gpg --import-ownertrust
 
 .PHONY: pass-init
 pass-init: review-user-variables
@@ -136,7 +136,7 @@ pass-clone:
 
 .PHONY: pass-list
 pass-list:
-	@pass list
+	pass list
 
 .PHONY: prompt-email
 prompt-email:
