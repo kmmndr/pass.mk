@@ -88,7 +88,7 @@ ${GNUPGHOME}/generate-key.batch: gpg-review-variables
 .PHONY: gpg-generate-key
 gpg-generate-key: ${GNUPGHOME}/generate-key.batch
 	@if ! gpg --fingerprint ${real_email} > /dev/null 2>&1; then \
-		echo "Key not found, generating..."; \
+		echo "Key not found for ${real_email}, generating..."; \
 		gpg --batch --generate-key $^; \
 	else \
 		echo "Key found for ${real_email}"; \
