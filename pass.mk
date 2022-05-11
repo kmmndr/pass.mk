@@ -90,6 +90,8 @@ gpg-generate-key: ${GNUPGHOME}/generate-key.batch
 	@if ! gpg --fingerprint ${real_email} > /dev/null 2>&1; then \
 		echo "Key not found for ${real_email}, generating..."; \
 		gpg --batch --generate-key $^; \
+		fingerprint=$$(gpg --with-colons --list-keys ${real_email} | awk -F: '/^pub:.*/ { getline; print $$10}'); \
+		gpg --quick-add-key $$fingerprint ed25519 auth; \
 	else \
 		echo "Key found for ${real_email}"; \
 	fi
