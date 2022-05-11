@@ -18,7 +18,18 @@ Options:
     Generate key for yourself
 
   gpg-export-key
-    Display public key to be shared (to gitlab)
+    Display public key to be shared (to gitlab) and export
+    in an archive in home folder
+
+  gpg-export-secret-key
+    Export secret key to an encrypted archive in home folder
+
+  gpg-export-archive
+    Create a tag.gz file in home folder (to be stored somewhere
+    else, offline, as a backup)
+
+  gpg-import-archive
+    Import keys from previously exported archive in home folder
 
   gpg-import-from-gitlab (-e GITLAB_HOST=${GITLAB_HOST})
     Import someone else key from Gitlab
@@ -104,7 +115,36 @@ gpg-find-key:
 .PHONY: gpg-export-key
 gpg-export-key: review-user-variables
 	@echo 'Public key follows here :'
-	@gpg --export --armor ${real_email}
+	@gpg --export --armor ${real_email} | tee ${HOME}/${real_email}.gpg-public.asc
+
+.PHONY: gpg-export-secret-key
+gpg-export-secret-key: review-user-variables
+	@gpg --export-secret-key --armor ${real_email} > ${HOME}/${real_email}.gpg-secret.asc
+	@echo
+	@echo "***"
+	@echo "Now you'll be asked to set a secret password to recover your secret key (Hit Enter to continue)"; read
+	@rm -f ${HOME}/${real_email}.gpg-secret.asc.gpg
+	@gpg -c ${HOME}/${real_email}.gpg-secret.asc
+	@(wipe ${HOME}/${real_email}.gpg-secret.asc 2> /dev/null || rm -f ${HOME}/${real_email}.gpg-secret.asc)
+
+.PHONY: gpg-export-archive
+gpg-export-archive: gpg-export-key gpg-export-secret-key
+	@archive_file=$(shell echo "${real_email}.gpg.tar.gz"); \
+		cd ${HOME}; tar -cvz -f $$archive_file ${real_email}.gpg-*.asc*; \
+		echo "Exported to ${HOME}/$$archive_file"
+
+.PHONY: gpg-import-archive
+gpg-import-archive: review-user-variables
+	@tmp_dir=$(shell mktemp -d --tmpdir=${HOME}); \
+		cd $$tmp_dir; \
+		echo "Importing from ${HOME}/${real_email}.gpg.tar.gz ..."; \
+		cp ${HOME}/${real_email}.gpg.tar.gz .; \
+		tar xvfz "${real_email}.gpg.tar.gz"; \
+		gpg --decrypt ${real_email}.gpg-secret.asc.gpg > ${real_email}.gpg-secret.asc ; \
+		gpg --import ${real_email}.gpg-secret.asc; \
+		gpg --import ${real_email}.gpg-public.asc; \
+		(wipe ${real_email}.gpg-secret.asc 2> /dev/null || rm -f ${real_email}.gpg-secret.asc); \
+		rm -rf $$tmp_dir
 
 .PHONY: gpg-create-keyring
 gpg-create-keyring: gpg-review-variables gpg-generate-key gpg-find-key gpg-export-key
